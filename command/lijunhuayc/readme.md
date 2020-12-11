@@ -1,11 +1,11 @@
-Android设计模式源码解析之命令模式 
+Android设计模式源码解析之命令模式
 ====================================
-> 本文为 [Android 设计模式源码解析](https://github.com/simple-android-framework-exchange/android_design_patterns_analysis) 中 命令模式 分析  
-> Android系统版本： 2.3        
-> 分析者：[lijunhuayc](https://github.com/lijunhuayc)，分析状态：完成，校对者：[Mr.Simple](https://github.com/bboyfeiyu)，校对状态：未开始   
+> 本文为 [Android 设计模式源码解析](https://github.com/simple-android-framework-exchange/android_design_patterns_analysis) 中 命令模式 分析
+> Android系统版本： 2.3
+> 分析者：[lijunhuayc](https://github.com/lijunhuayc)，分析状态：完成，校对者：[Mr.Simple](https://github.com/bboyfeiyu)，校对状态：未开始
 
-## 1. 模式介绍  
- 
+## 1. 模式介绍
+
 ###  模式的定义
 将一个请求封装成一个对象，从而使你可用不同的请求对客户进行参数化，对请求排队或记录请求日志，以及支持可撤销的操作。
 
@@ -16,7 +16,7 @@ Android设计模式源码解析之命令模式
 4. 系统需要将一组操作组合在一起，即支持宏命令。
 
 ## 2. UML类图
-![UML类图](images/lijunhuayc_uml.png) 
+![UML类图](images/lijunhuayc_uml.png)
 
 
 ### 角色介绍
@@ -48,13 +48,13 @@ Android设计模式源码解析之命令模式
     	public void undo();
     	public void redo();
     }
-    
+
 ```
 
-ConcreteCommandImpl1.java类.     
+ConcreteCommandImpl1.java类.
 
 
-```java    
+```java
 
     package com.command;
     /**
@@ -62,11 +62,11 @@ ConcreteCommandImpl1.java类.
      */
     public class ConcreteCommandImpl1 implements Command{
     	private ReceiverRole receiverRole1;
-    
+
     	public ConcreteCommandImpl1(ReceiverRole receiverRole1) {
     		this.receiverRole1 = receiverRole1;
     	}
-    	
+
     	@Override
     	public void execute() {
     		/*
@@ -74,12 +74,12 @@ ConcreteCommandImpl1.java类.
     		 */
     		receiverRole1.opActionUpdateAge(1001);//执行具体的命令操作
     	}
-    
+
     	@Override
     	public void undo() {
     		receiverRole1.rollBackAge();//执行具体的撤销回滚操作
     	}
-    
+
     	@Override
     	public void redo() {
     		//在命令执行前可以修改命令的执行
@@ -87,7 +87,7 @@ ConcreteCommandImpl1.java类.
     }
 ```
 
-ConcreteCommandImpl2.java类.    
+ConcreteCommandImpl2.java类.
 
 ```java
     package com.command;
@@ -96,11 +96,11 @@ ConcreteCommandImpl2.java类.
      */
     public class ConcreteCommandImpl2 implements Command{
     	private ReceiverRole receiverRole1;
-    
+
     	public ConcreteCommandImpl2(ReceiverRole receiverRole1) {
     		this.receiverRole1 = receiverRole1;
     	}
-    	
+
     	@Override
     	public void execute() {
     		/*
@@ -108,21 +108,21 @@ ConcreteCommandImpl2.java类.
     		 */
     		receiverRole1.opActionUpdateName("lijunhuayc");//执行具体的命令操作
     	}
-    
+
     	@Override
     	public void undo() {
     		receiverRole1.rollBackName();//执行具体的撤销回滚操作
     	}
-    
+
     	@Override
     	public void redo() {
     		//在命令执行前可以修改命令的执行
     	}
-    	
+
     }
 ```
 
-InvokerRole.java.      
+InvokerRole.java.
 
 ```java
     package com.command;
@@ -133,14 +133,14 @@ InvokerRole.java.
     	private Command command1;
     	private Command command2;
     	//持有多个命令对象[实际的情况也可能是一个命令对象的集合来保存命令对象]
-    	
+
     	public void setCommand1(Command command1) {
     		this.command1 = command1;
     	}
     	public void setCommand2(Command command2) {
     		this.command2 = command2;
     	}
-    	
+
     	/**
     	 * 执行正常命令，1执行回滚命令
     	 */
@@ -154,11 +154,11 @@ InvokerRole.java.
     			command2.undo();
     		}
     	}
-    	
+
     }
 ```
 
-ReceiverRole.java.    
+ReceiverRole.java.
 
 ```java
     package com.command;
@@ -167,15 +167,15 @@ ReceiverRole.java.
      */
     public class ReceiverRole {
     	private PeopleBean people;
-    	//具体命令操作的缓存栈，用于回滚。这里为了方便就用一个PeopleBean来代替    
+    	//具体命令操作的缓存栈，用于回滚。这里为了方便就用一个PeopleBean来代替
     	private PeopleBean peopleCache = new PeopleBean();     	public ReceiverRole() {
     		this.people = new PeopleBean(-1, "NULL");//初始化年龄为-1，姓名为NULL
     	}
-    	
+
     	public ReceiverRole(PeopleBean people) {
     		this.people = people;
     	}
-	
+
 	/**
 	 * 具体操作方法[修改年龄和姓名]
 	 */
@@ -184,14 +184,14 @@ ReceiverRole.java.
 		this.people.update(age);
 		System.out.println("执行命令后："+people.toString()+"\n");
 	}
-	
+
 	//修改姓名
 	public void opActionUpdateName(String name) {
 		System.out.println("执行命令前："+people.toString());
 		this.people.update(name);
 		System.out.println("执行命令后："+people.toString()+"\n");
 	}
-	
+
 	/**
 	 * 回滚操作，用于撤销opAction执行的改变
 	 */
@@ -206,7 +206,7 @@ ReceiverRole.java.
 }
 ```
 
-PeopleBean.java     
+PeopleBean.java
 
 ```java
     package com.command;
@@ -244,12 +244,12 @@ PeopleBean.java
     	public String toString() {
     		return " 【年龄：" + age + "\t姓名：" + name + "】";
     	}
-    	// setter and getter 
-    	
-    }
-```     
+    	// setter and getter
 
-ClientRole.java    
+    }
+```
+
+ClientRole.java
 
 ```java
     package com.command;
@@ -265,7 +265,7 @@ ClientRole.java
     		//创建一个命令接收者
     		ReceiverRole receiverRole1 = new ReceiverRole();    			//创建一个命令的具体实现对象，并指定命令接收者
     		Command command1 = new ConcreteCommandImpl1(receiverRole1);           		    Command command2 = new ConcreteCommandImpl2(receiverRole1);
-    
+
     		InvokerRole invokerRole = new InvokerRole();//创建一个命令调用者
     		invokerRole.setCommand1(command1);//为调用者指定命令对象1
     		invokerRole.setCommand2(command2);//为调用者指定命令对象2
@@ -275,7 +275,7 @@ ClientRole.java
     }
 ```
 
-测试类.    
+测试类.
 
 ```java
     package com.command;
@@ -288,7 +288,7 @@ ClientRole.java
     }
 ```
 
-输出结果如下：       
+输出结果如下：
 
 ![运行结果图](images/lijunhuayc_result.png)
 
@@ -303,7 +303,7 @@ Command接口中定义了一个execute方法，客户端通过Invoker调用命�
 以Android中大家常见的Runnable为例：客户端只需要new Thread(new Runnable(){}).start()就开始执行一系列相关的请求，这些请求大部分都是实现Runnable接口的匿名类。
 【O_o 模式就在我们身边~】
 
-命令接口Runnable接口定义如下：    
+命令接口Runnable接口定义如下：
 
 ```
 package java.lang;
@@ -323,7 +323,7 @@ public interface Runnable {
 ```
 
 调用者Thread源码如下（省略部分代码）：
-Tips：命令模式在这里本来不需要继承Runnable接口，但为了方便性等，继承了Runnable接口实现了run方法，这个run是Thread自身的运行run的方法，而不是命令Runnable的run。    
+Tips：命令模式在这里本来不需要继承Runnable接口，但为了方便性等，继承了Runnable接口实现了run方法，这个run是Thread自身的运行run的方法，而不是命令Runnable的run。
 
 ```
 public class Thread implements Runnable {
@@ -337,7 +337,7 @@ public class Thread implements Runnable {
     volatile long stackSize;
     Runnable target;
     private static int count = 0;
-    
+
     public synchronized void start() {
         if (hasBeenStarted) {
             throw new IllegalThreadStateException("Thread already started."); // TODO Externalize?
@@ -349,9 +349,9 @@ public class Thread implements Runnable {
     }
     //省略部分代码...
 }
-```    
+```
 
-上面可以看到执行start()方法的时候实际执行了VMThread.create(this, stackSize)方法；create是VMThread的本地方法，其JNI实现在 android/dalvik/vm/native/java_lang_VMThread.cpp 中的 Dalvik_java_lang_VMThread_create方法，如下：      
+上面可以看到执行start()方法的时候实际执行了VMThread.create(this, stackSize)方法；create是VMThread的本地方法，其JNI实现在 android/dalvik/vm/native/java_lang_VMThread.cpp 中的 Dalvik_java_lang_VMThread_create方法，如下：
 
 ```
 static void Dalvik_java_lang_VMThread_create(const u4* args, JValue* pResult)
@@ -363,21 +363,21 @@ static void Dalvik_java_lang_VMThread_create(const u4* args, JValue* pResult)
     dvmCreateInterpThread(threadObj, (int) stackSize);
     RETURN_VOID();
 }
-```    
+```
 
-而dvmCreateInterpThread的实现在Thread.app中，如下：    
+而dvmCreateInterpThread的实现在Thread.app中，如下：
 
 ```
 bool dvmCreateInterpThread(Object* threadObj, int reqStackSize){
     Thread* self = dvmThreadSelf();
-    
-    Thread* newThread = allocThread(stackSize); 
+
+    Thread* newThread = allocThread(stackSize);
     newThread->threadObj = threadObj;
-    
+
     Object* vmThreadObj = dvmAllocObject(gDvm.classJavaLangVMThread, ALLOC_DEFAULT);
     dvmSetFieldInt(vmThreadObj, gDvm.offJavaLangVMThread_vmData, (u4)newThread);
     dvmSetFieldObject(threadObj, gDvm.offJavaLangThread_vmThread, vmThreadObj);
-    
+
     pthread_t threadHandle;
     int cc = pthread_create(&threadHandle, &threadAttr, interpThreadStart, newThread);
 
@@ -388,20 +388,20 @@ bool dvmCreateInterpThread(Object* threadObj, int reqStackSize){
     pthread_cond_broadcast(&gDvm.threadStartCond);
 
     dvmUnlockThreadList();
-    
+
 }
 
 static Thread* allocThread(int interpStackSize)
 {
     Thread* thread;
     thread = (Thread*) calloc(1, sizeof(Thread));
-    
+
     thread->status = THREAD_INITIALIZING;
 }
-```   
+```
 
 这里是底层代码，简单介绍下就行了：
-第4行通过调用 allocThread 创建一个名为newThread的dalvik Thread并设置一些属性，第5行设置其成员变量threadObj为传入的Android Thread，这样dalvik Thread就与Android Thread对象关联起来了；第7行然后创建一个名为vmThreadObj的VMThread对象，设置其成员变量vmData为前面创建的newThread，设置 Android Thread threadObj的成员变量vmThread为这个vmThreadObj，这样Android Thread通过VMThread的成员变量vmData就和dalvik Thread关联起来了。       
+第4行通过调用 allocThread 创建一个名为newThread的dalvik Thread并设置一些属性，第5行设置其成员变量threadObj为传入的Android Thread，这样dalvik Thread就与Android Thread对象关联起来了；第7行然后创建一个名为vmThreadObj的VMThread对象，设置其成员变量vmData为前面创建的newThread，设置 Android Thread threadObj的成员变量vmThread为这个vmThreadObj，这样Android Thread通过VMThread的成员变量vmData就和dalvik Thread关联起来了。
 
 接下来在12行通过pthread_create创建pthread线程，并让这个线程start，这样就会进入该线程的thread entry运行，下来我们来看新线程的thread entry方法 interpThreadStart，同样只列出关键的地方：
 
@@ -428,7 +428,7 @@ static void* interpThreadStart(void* arg){
 
     //修改状态为THREAD_RUNNING
     dvmChangeStatus(self, THREAD_RUNNING);
-    
+
     //执行run方法
     Method* run = self->threadObj->clazz->vtable[gDvm.voffJavaLangThread_run];
 
@@ -437,7 +437,7 @@ static void* interpThreadStart(void* arg){
     assert(strcmp(run->name, "run") == 0);
     dvmCallMethod(self, run, self->threadObj, &unused);
     ALOGV("threadid=%d: exiting", self->threadId);
-    
+
     //移出线程并释放资源
     dvmDetachCurrentThread();
     return NULL;
@@ -457,10 +457,10 @@ static void setThreadSelf(Thread* thread){
     int cc;
     cc = pthread_setspecific(gDvm.pthreadKeySelf, thread);
 }
-```    
+```
 
 在新线程的interpThreadStart方法中，首先设置线程的名字，然后调用prepareThread设置线程id以及其它一些属性，其中调用了setThreadSelf将新dalvik Thread自身保存在TLS中，这样之后就能通过dvmThreadSelf方法从TLS中获取它。然后在29行处修改状态为THREAD_RUNNING，并在36行调用对应Android Thread的run()方法，其中调用了Runnable的run方法，运行我们自己的代码。
-绕这么深才执行到我们的run方法，累不累？ v_v      
+绕这么深才执行到我们的run方法，累不累？ v_v
 
 ```
     /**
@@ -473,19 +473,19 @@ static void setThreadSelf(Thread* thread){
             target.run();
         }
     }
-```   
+```
 
 到此我们已经完成一次命令调用，至于底层run调用完毕后续执行代码，读者可以自行跟进看看~~~
 
 
 ## 4. 杂谈
-###优点与缺点
-####优点
+### 优点与缺点
+#### 优点
 1. 降低对象之间的耦合度。
 2. 新的命令可以很容易地加入到系统中。
 3. 可以比较容易地设计一个组合命令。
-4. 调用同一方法实现不同的功能
+4. 调用同一方法实现不同的功能。
 
-####缺点
-使用命令模式可能会导致某些系统有过多的具体命令类。因为针对每一个命令都需要设计一个具体命令类，因此某些系统可能需要大量具体命令类，这将影响命令模式的使用。       
+#### 缺点
+使用命令模式可能会导致某些系统有过多的具体命令类。因为针对每一个命令都需要设计一个具体命令类，因此某些系统可能需要大量具体命令类，这将影响命令模式的使用。
 比如上面的PeopleBean的属性增加，Receiver针对PeopleBean一个属性一个执行方法，一个Command的实现可以调用Receiver的一个执行方法，由此得需要设计多少个具体命令类呀！！
